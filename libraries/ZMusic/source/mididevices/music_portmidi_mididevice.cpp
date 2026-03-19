@@ -648,7 +648,7 @@ void PortMIDIDevice::PlayerLoop()
 		Position += PositionOffset;
 		HandleCurrentEvent();
 	}
-	std::this_thread::sleep_for(std::chrono::milliseconds(buffer_time_limit));
+	std::this_thread::sleep_for(std::chrono::milliseconds(buffer_time_limit * 2));
 }
 
 void PortMIDIDevice::PrepareTempo(const uint32_t tempo)
