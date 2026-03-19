@@ -367,32 +367,15 @@ void PortMIDIDevice::Stop()
 		PlayerThread.join();
 	}
 
-	std::this_thread::sleep_for(std::chrono::milliseconds(48)); // 3x time limit
-#define SYSEX_RESET
 #ifdef SYSEX_RESET
 	Pm_WriteSysEx(Stream, 0, (uint8_t[]){0xf0, 0x7e, 0x7f, 0x09, 0x01, 0xf7}); // Universal General Midi reset message
 #else
-	for (int i = 0; i < 16; ++i)
+	for (int channel = 0; channel < 16; ++channel)
 	{
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | i, 0x7B, 0x00)); // Notes off
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | i, 0x78, 0x00)); // Sound off
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | i, 0x79, 0x00)); // Reset all controllers
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | i, 0x07, 0x64)); // Channel volume
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | i, 0x0A, 0x40)); // Pan
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | i, 0x00, 0x00)); // Bank select msb
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | i, 0x20, 0x00)); // Bank select lsb
-		Pm_WriteShort(Stream, 0, Pm_Message(0xC0 | i, 0x00, 0x00)); // Program change
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | i, 0x64, 0x00)); // Pitch bend sens RPN LSB
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | i, 0x65, 0x00)); // Pitch bend sens RPN MSB
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | i, 0x06, 0x02)); // Data entry MSB
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | i, 0x26, 0x00)); // Data entry LSB
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | i, 0x64, 0x7F)); // Null RPN LSB
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | i, 0x65, 0x7F)); // Null RPN MSB
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | i, 0x5B, 40)); // Reverb
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | i, 0x5D, 0)); // Chorus
+		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | channel, 0x7B, 0x00)); // Notes off
+		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | channel, 0x79, 0x00)); // Reset all controllers
 	}
 #endif
-	std::this_thread::sleep_for(std::chrono::milliseconds(16));
 
 	// Clear event queue
 	Events = nullptr;
@@ -665,6 +648,7 @@ void PortMIDIDevice::PlayerLoop()
 		Position += PositionOffset;
 		HandleCurrentEvent();
 	}
+	std::this_thread::sleep_for(std::chrono::milliseconds(buffer_time_limit));
 }
 
 void PortMIDIDevice::PrepareTempo(const uint32_t tempo)
