@@ -151,10 +151,12 @@ MIDIDevice *CreateTimidityMIDIDevice(const char* Args, int samplerate);
 MIDIDevice *CreateTimidityPPMIDIDevice(const char *Args, int samplerate);
 MIDIDevice *CreateWildMIDIDevice(const char *Args, int samplerate);
 
-#ifdef _WIN32
-MIDIDevice* CreateWinMIDIDevice(int mididevice);
-#endif
-
-#ifdef __linux__
-MIDIDevice* CreateAlsaMIDIDevice(int mididevice);
+#ifdef USE_PORTMIDI
+	MIDIDevice* CreatePortMIDIDevice(int mididevice);
+#elif _WIN32
+	MIDIDevice* CreateWinMIDIDevice(int mididevice);
+#elif __linux__
+	MIDIDevice* CreateAlsaMIDIDevice(int mididevice);
+#elif __APPLE__
+	MIDIDevice* CreateCoreMIDIDevice(int mididevice);
 #endif

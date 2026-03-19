@@ -45,6 +45,10 @@
 #include "midiconfig.h"
 #include "mididevices/music_alsa_state.h"
 
+#ifdef USE_PORTMIDI
+#include "portmidi.h"
+#endif
+
 #ifdef HAVE_TIMIDITY
 #include "timidity/timidity.h"
 #include "timiditypp/timidity.h"
@@ -164,10 +168,13 @@ DLL_EXPORT void ZMusic_SetDmxGus(const void* data, unsigned len)
 #endif
 }
 
+// FIXME: This function is unused, is it worth keeping?
 int ZMusic_EnumerateMidiDevices()
 {
 #ifdef HAVE_SYSTEM_MIDI
-	#ifdef __linux__
+	#ifdef USE_PORTMIDI
+		return Pm_CountDevices();
+	#elif __linux__
 		auto & sequencer = AlsaSequencer::Get();
 		return sequencer.EnumerateDevices();
 	#elif _WIN32
@@ -215,7 +222,13 @@ struct MidiDeviceList
 #endif
 
 #ifdef HAVE_SYSTEM_MIDI
-#ifdef __linux__
+#ifdef USE_PORTMIDI
+		for (int i = 0; i < Pm_CountDevices(); i++)
+		{
+			if (!Pm_GetDeviceInfo(i)->output) { continue; }
+			devices.push_back({ strdup(Pm_GetDeviceInfo(i)->name), i, MIDIDEV_MAPPER });
+		}
+#elif __linux__
 		auto& sequencer = AlsaSequencer::Get();
 		sequencer.EnumerateDevices();
 		auto& dev = sequencer.GetInternalDevices();

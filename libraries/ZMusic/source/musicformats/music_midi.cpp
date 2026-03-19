@@ -280,7 +280,9 @@ MIDIDevice *MIDIStreamer::CreateMIDIDevice(EMidiDevice devtype, int samplerate)
 			case MDEV_STANDARD:
 
 #ifdef HAVE_SYSTEM_MIDI
-#ifdef _WIN32
+#ifdef USE_PORTMIDI
+				dev = CreatePortMIDIDevice(std::max(0, miscConfig.snd_mididevice));
+#elif _WIN32
 				dev = CreateWinMIDIDevice(std::max(0, miscConfig.snd_mididevice));
 #elif __linux__
                 dev = CreateAlsaMIDIDevice(std::max(0, miscConfig.snd_mididevice));
