@@ -45,6 +45,11 @@
 #include "midiconfig.h"
 #include "mididevices/music_alsa_state.h"
 
+#ifdef __APPLE__
+#include <CoreMIDI/CoreMIDI.h>
+#include <CoreFoundation/CoreFoundation.h>
+#endif
+
 #ifdef USE_PORTMIDI
 #include "portmidi.h"
 #endif
@@ -256,6 +261,19 @@ struct MidiDeviceList
 				ZMusicMidiOutDevice mdev = { outbuf, int(id), caps.wTechnology };
 				devices.push_back(mdev);
 			}
+		}
+#elif __APPLE__
+		for (int i = 0; i < MIDIGetNumberOfDestinations(); i++)
+		{
+			uint32_t endpoint = MIDIGetDestination(i);
+			if (!endpoint)
+			{
+				continue;
+			}
+			CFStringRef cfName;
+			MIDIObjectGetStringProperty(endpoint, kMIDIPropertyName, &cfName);
+			//char* cStringPtr = CFStringGetCStringPtr(cfName, kCFStringEncodingUTF8);
+			devices.push_back({ strdup(CFStringGetCStringPtr(cfName, kCFStringEncodingUTF8)), i, MIDIDEV_MAPPER });
 		}
 #endif
 #endif
