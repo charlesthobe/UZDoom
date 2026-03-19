@@ -372,8 +372,8 @@ void PortMIDIDevice::Stop()
 #else
 	for (int channel = 0; channel < 16; ++channel)
 	{
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | channel, 0x7B, 0x00)); // Notes off
-		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | channel, 0x79, 0x00)); // Reset all controllers
+		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | channel, 0x7B, 0)); // Notes off
+		Pm_WriteShort(Stream, 0, Pm_Message(0xB0 | channel, 0x79, 0)); // Reset all controllers
 	}
 #endif
 
