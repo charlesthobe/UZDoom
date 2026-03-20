@@ -120,7 +120,7 @@ elseif(WIN32)
 elseif(APPLE)
 	target_compile_definitions(zmusic-obj INTERFACE HAVE_SYSTEM_MIDI)
 	target_sources(zmusic-obj INTERFACE
-		mididevices/music_coremidi_mididevice.mm
+		mididevices/music_coremidi_mididevice.cpp
 	)
 	target_link_libraries(zmusic-obj INTERFACE
 		"-framework CoreMIDI"

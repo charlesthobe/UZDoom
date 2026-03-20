@@ -1,5 +1,5 @@
 /*
-** music_coremidi_mididevice.mm
+** music_coremidi_mididevice.cpp
 ** Provides access to CoreMIDI on macOS for hardware MIDI playback
 **
 **---------------------------------------------------------------------------
@@ -580,7 +580,6 @@ bool PortMIDIDevice::PlayTick()
 			break;
 		}
 	}
-		break;
 	case 0: // Short MIDI message (note on/off, control change, etc.)
 	{
 		uint8_t status = midi_event_type_param & 0xFF;
