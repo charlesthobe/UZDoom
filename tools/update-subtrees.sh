@@ -62,5 +62,5 @@ subtree_action() {
 
 subtree_action 'zwidget'     'libraries/ZWidget'     'https://github.com/UZDoom/ZWidget'     'legacy' "${@}"
 subtree_action 'zmusic'      'libraries/ZMusic'      'https://github.com/UZDoom/ZMusic'      'trunk'  "${@}"
-subtree_action 'translation' 'libraries/Translation' 'https://github.com/UZDoom/Translation' 'main'   "${@}"
+subtree_action 'translation' 'libraries/Translation' 'https://github.com/UZDoom/Translation' '810c8b7f07889af89372bdb92e06303978e5e720'   "${@}"
 subtree_action 'zvulkan'     'libraries/ZVulkan'     'https://github.com/UZDoom/ZVulkan'     'legacy' "${@}"
