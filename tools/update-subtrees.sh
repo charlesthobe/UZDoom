@@ -1,9 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # usage:
 # ./update-subtrees all
 # ./update-subtrees component
 # ./update-subtrees component commit
+
+if (( ${BASH_VERSINFO[0]} < 5 || ${BASH_VERSINFO[1]} < 1 ))
+then
+	echo "This script requires at least bash version 5.1"
+	echo "If you're on mac you can install bash through homebrew."
+	exit
+fi
 
 export GITROOT="$(git rev-parse --show-toplevel)"
 
