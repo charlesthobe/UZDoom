@@ -12,6 +12,13 @@ then
 	print_usage
 fi
 
+if (( ${BASH_VERSINFO[0]} < 5 || ${BASH_VERSINFO[1]} < 1 ))
+then
+	echo "This script requires at least bash version 5.1"
+	echo "If you're on mac you can install bash through homebrew."
+	exit
+fi
+
 export GITROOT="$(git rev-parse --show-toplevel)"
 
 if [[ "${1}" == "--allow-empty" ]]
